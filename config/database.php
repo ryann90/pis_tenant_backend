@@ -80,11 +80,11 @@ return [
 
         'client' => [
             'driver' => 'mysql',
-            'host' => '127.0.0.1',
+            'host' => '',
             'port' => '3306',
             'database' => '',
-            'username' => 'root',
-            'password' => 'null',
+            'username' => '',
+            'password' => null,
             'unix_socket' => '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',

@@ -52,7 +52,7 @@ use Illuminate\Support\Facades\Schema;
     }
 
     // FOR DB CONNECTION
-    function clientConnect($hostname = null,$database = null, $username = null, $password = null){
+    function clientConnect($hostname = null, $database = null, $username = null, $password = null){
 
         DB::purge('client');
 
@@ -62,6 +62,7 @@ use Illuminate\Support\Facades\Schema;
         Config::set('database.connections.client.password', $password);
 
         // Rearrange the connection data
+        // Connection path can be seen on database.php any changes will be reflected there
         DB::connection('client');
 
         // Ping the database. This will throw an exception in case the database does not exists.
@@ -84,29 +85,67 @@ use Illuminate\Support\Facades\Schema;
             $table->string('last_seen')->nullable();                                              
             $table->string('api_token')->nullable();
             $table->string('remember_token')->nullable();
-            $table->string('created_by')->default('Aion'); 
+            $table->string('created_by')->default('PIS'); 
             $table->string('emp_num')->nullable();             
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
 
-        Schema::connection('client')->create($tbl.'_profile', function ($table) {
+        Schema::connection('client')->create($tbl.'_company', function ($table) {
             $table->increments('id');
-            $table->string('user_id');
-            $table->string('fname');
-            $table->string('mname')->nullable();
-            $table->string('lname');
-            $table->string('tel_num')->nullable();
-            $table->string('cell_num')->nullable();
+            $table->string('company_id')->unique();
+            $table->string('name');
             $table->string('address')->nullable();
-            $table->string('image')->default('Photo.png');
-            $table->string('reports_to')->nullable();
+            $table->string('email')->nullable();
+            $table->string('business_type')->nullable();
+            $table->integer('setup_status')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
 
-        /* Schema::connection('client')->create($tbl.'_', function ($table) {
-            
-        }); */
+        Schema::connection('client')->create($tbl.'_roles', function ($table) {
+            $table->string('roles_id');
+            $table->string('name');
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+        });
+
+        Schema::connection('client')->create($tbl.'_department', function ($table) {
+            $table->increments('id');
+            $table->string('company_id');
+            $table->string('supervisor_id');
+            $table->string('department_name');
+            $table->string('position_name');
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+        });
+
+        Schema::connection('client')->create($tbl.'_employee_details', function ($table){
+            $table->increments('id');
+            $table->string('user_id');
+            $table->string('employee_num')->nullable();
+            $table->string('fname', 100)->nullable();
+            $table->string('mname', 100)->nullable();
+            $table->string('lname', 100)->nullable();
+            $table->string('suffix', 50)->nullable();
+            $table->integer('zipcode')->nullable()->unsigned();
+            $table->string('title_code', 50)->nullable();
+            $table->string('address', 500)->nullable();
+            $table->string('other_address', 500)->nullable();
+            $table->string('gender', 50)->nullable();
+            $table->integer('tel_num')->nullable()->unsigned();
+            $table->string('cell_num')->nullable();
+            $table->string('work_location', 500)->nullable();
+            $table->string('religion', 50)->nullable();
+            $table->string('nationality', 50)->nullable();
+            $table->string('citizenship', 50)->nullable();
+            $table->string('marital_status', 30)->nullable();
+            $table->string('birthdate')->nullable();
+            $table->string('birthplace', 500)->nullable();
+            $table->string('image')->nullable()->default('image.png');
+            $table->tinyInteger('status')->default(1);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+        });
     }
 ?>
