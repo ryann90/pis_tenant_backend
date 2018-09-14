@@ -17,4 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('register','TenantController@registerTenant');
+Route::post('register','TenantController@registerTenant')->middleware('cors');
+Route::post('login','TenantLoginController@login')->middleware('cors');
+
+Route::resource('employee','TenantEmployeeController')->middleware('cors');

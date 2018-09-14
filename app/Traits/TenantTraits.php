@@ -23,8 +23,8 @@ trait TenantTraits{
 		]);
 
 		$data = [
+			'company' => ['company_id' => $company_id, 'name' => $request->post('companyname'), 'email' => $request->post('email')],
 			'users' => ['user_id' => $owner_id, 'company_id' => $company_id, 'email' => $request->post('email'), 'password' => $request->post('password_confirmation')],
-			'company' => ['company_id' => $company_id, 'name' => $request->post('companyname')],
 			'employee_details' => ['user_id' => $owner_id, 'fname' => $request->post('fname'), 'mname' => $request->post('mname'), 'lname' => $request->post('lname')], 
 		];
 		

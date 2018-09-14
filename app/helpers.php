@@ -54,7 +54,7 @@ use Illuminate\Support\Facades\Schema;
     // FOR DB CONNECTION
     function clientConnect($hostname = null, $database = null, $username = null, $password = null){
 
-        DB::purge('client');
+        // DB::purge('client');
 
         Config::set('database.connections.client.host', $hostname);
         Config::set('database.connections.client.database', $database);
@@ -66,39 +66,38 @@ use Illuminate\Support\Facades\Schema;
         DB::connection('client');
 
         // Ping the database. This will throw an exception in case the database does not exists.
-        Schema::connection('client')->getConnection()->reconnect();
-
+        // Schema::connection('client')->getConnection()->reconnect();
     }
 
     // FOR TABLE CREATION OF TENANT
 
     function migrateClientTables($tbl){
 
+        Schema::connection('client')->create($tbl.'_company', function ($table) {
+            $table->increments('id');
+            $table->string('company_id')->unique();
+            $table->string('name');
+            $table->string('address')->nullable();
+            $table->string('email')->unique();
+            $table->string('business_type')->nullable();
+            $table->integer('setup_status')->default(0);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+        });
+
         Schema::connection('client')->create($tbl.'_users', function ($table) {
             $table->increments('id');
             $table->string('user_id')->unique();
-            $table->string('email')->unique();            
+            $table->string('company_id');
+            $table->string('email');       
             $table->tinyInteger('type')->default(1);            
-            $table->string('password'); 
-            $table->string('company_id'); 
+            $table->string('password');  
             $table->tinyInteger('isActive')->default(1); 
             $table->string('last_seen')->nullable();                                              
             $table->string('api_token')->nullable();
             $table->string('remember_token')->nullable();
             $table->string('created_by')->default('PIS'); 
             $table->string('emp_num')->nullable();             
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-        });
-
-        Schema::connection('client')->create($tbl.'_company', function ($table) {
-            $table->increments('id');
-            $table->string('company_id')->unique();
-            $table->string('name');
-            $table->string('address')->nullable();
-            $table->string('email')->nullable();
-            $table->string('business_type')->nullable();
-            $table->integer('setup_status')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
